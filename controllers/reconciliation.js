@@ -226,6 +226,7 @@ class BankReconciliationController {
 
     return {
       reconciliationDate: new Date().toISOString().split('T')[0],
+      asOfDate: new Date().toISOString().split('T')[0],
       companyId,
       bankAccount: bankAccount || 'MainBank',
       
@@ -316,9 +317,8 @@ const getBankReconciliation = async (req, res) => {
 
     if (!companyid) {
       return res.status(400).json({
-        error: 'Missing required parameter',
-        required: ['companyid'],
-        optional: ['bankaccount']
+        error: 'Missing required parameters',
+        required: ['companyid', 'bankaccount']
       });
     }
 
@@ -330,11 +330,11 @@ const getBankReconciliation = async (req, res) => {
       });
     }
 
-    // Validate bankaccount if provided
-    if (bankaccount && typeof bankaccount !== 'string') {
+    // Validate bankaccount if provided - should be a string and not a number
+    if (bankaccount && (typeof bankaccount !== 'string' || /^\d+$/.test(bankaccount))) {
       return res.status(400).json({
         error: 'Invalid bank account',
-        message: 'Bank account must be a string'
+        message: 'Bank account must be a valid bank account name'
       });
     }
 

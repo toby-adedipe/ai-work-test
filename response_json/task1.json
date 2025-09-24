@@ -1,0 +1,81 @@
+{
+  "period": {
+    "fromDate": "2025-01-01",
+    "toDate": "2025-01-31",
+    "companyId": 1
+  },
+  "operatingActivities": {
+    "inflows": [
+      {
+        "account": "Cash",
+        "amount": 8000,
+        "party": "Customer B",
+        "note": "Payment received",
+        "date": "2025-01-15T23:00:00.000Z"
+      }
+    ],
+    "outflows": [
+      {
+        "account": "Office Rent",
+        "amount": 2000,
+        "party": "Landlord Ltd.",
+        "note": "January rent",
+        "date": "2025-01-04T23:00:00.000Z"
+      },
+      {
+        "account": "Inventory",
+        "amount": 3000,
+        "party": "Supplier A",
+        "note": "Purchase inventory",
+        "date": "2025-01-09T23:00:00.000Z"
+      },
+      {
+        "account": "Utilities Expense",
+        "amount": 500,
+        "party": "Power Co",
+        "note": "Electricity bill",
+        "date": "2025-01-19T23:00:00.000Z"
+      },
+      {
+        "account": "Bank Charges",
+        "amount": 500,
+        "party": "BigBank",
+        "note": "Monthly service charge",
+        "date": "2025-01-27T23:00:00.000Z"
+      }
+    ],
+    "netOperatingCashFlow": 2000
+  },
+  "investingActivities": {
+    "inflows": [],
+    "outflows": [],
+    "netInvestingCashFlow": 0
+  },
+  "financingActivities": {
+    "inflows": [
+      {
+        "account": "Cash",
+        "amount": 10000,
+        "party": "Investor",
+        "note": "Capital Contribution",
+        "date": "2025-01-01T23:00:00.000Z"
+      },
+      {
+        "account": "Cash",
+        "amount": 7000,
+        "party": "BigBank",
+        "note": "Loan deposit",
+        "date": "2025-01-25T23:00:00.000Z"
+      }
+    ],
+    "outflows": [],
+    "netFinancingCashFlow": 17000
+  },
+  "summary": {
+    "totalCashInflows": 25000,
+    "totalCashOutflows": 6000,
+    "netChangeInCash": 19000,
+    "openingCashBalance": 0,
+    "closingCashBalance": 19000
+  }
+}

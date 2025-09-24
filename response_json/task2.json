@@ -1,0 +1,61 @@
+{
+  "reconciliationDate": "2025-09-24",
+  "companyId": 1,
+  "bankAccount": "MainBank",
+  "ledgerBalance": 22500,
+  "bankStatementBalance": 19000,
+  "reconcilingItems": {
+    "outstandingChecks": {
+      "items": [
+        {
+          "reference": "CHQ102",
+          "date": "2025-01-09T23:00:00.000Z",
+          "account": "Inventory",
+          "amount": 3000,
+          "description": "Outstanding check - Purchase inventory",
+          "party": "Supplier A",
+          "note": "Purchase inventory"
+        }
+      ],
+      "totalAmount": 3000,
+      "count": 1
+    },
+    "depositsInTransit": {
+      "items": [],
+      "totalAmount": 0,
+      "count": 0
+    },
+    "ledgerAdjustments": {
+      "items": [
+        {
+          "reference": "CHQ104",
+          "date": "2025-01-27T23:00:00.000Z",
+          "account": "Bank Charges",
+          "amount": 500,
+          "description": "Unrecorded bank charges - Monthly service charge",
+          "party": "BigBank",
+          "note": "Monthly service charge",
+          "type": "Unrecorded bank charges",
+          "adjustmentType": "decrease"
+        }
+      ],
+      "totalAmount": -500,
+      "count": 1
+    },
+    "bankErrors": {
+      "items": [],
+      "totalAmount": 0,
+      "count": 0
+    }
+  },
+  "adjustedLedgerBalance": 22000,
+  "adjustedBankBalance": 22000,
+  "isReconciled": true,
+  "difference": 0,
+  "summary": {
+    "totalUnreconciledItems": 2,
+    "ledgerBalanceAfterAdjustments": 22000,
+    "bankBalanceAfterAdjustments": 22000,
+    "netDifference": 0
+  }
+}

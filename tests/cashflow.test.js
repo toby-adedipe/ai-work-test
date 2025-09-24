@@ -21,7 +21,7 @@ describe('Cash Flow Statement API', () => {
         .expect(400);
 
       expect(response.body.error).toBe('Missing required parameters');
-    })
+    });
 
     it('should return 400 when missing fromDate', async () => {
       const response = await request(app)
@@ -39,7 +39,23 @@ describe('Cash Flow Statement API', () => {
       expect(response.body.error).toBe('Missing required parameters');
     });
 
-    it('should return cash flow statement structure with all required parameters', async () => {
+    it('should return 400 for invalid date format', async () => {
+      const response = await request(app)
+        .get('/api/cashflow?companyid=1&fromDate=01-01-2025&toDate=2025-01-31')
+        .expect(400);
+
+      expect(response.body.error).toBe('Invalid date format');
+    });
+
+    it('should return 400 for invalid company ID', async () => {
+      const response = await request(app)
+        .get('/api/cashflow?companyid=invalid&fromDate=2025-01-01&toDate=2025-01-31')
+        .expect(400);
+
+      expect(response.body.error).toBe('Invalid company ID');
+    });
+
+    it('should return cash flow statement structure with valid parameters', async () => {
       const response = await request(app)
         .get('/api/cashflow?companyid=1&fromDate=2025-01-01&toDate=2025-01-31')
         .expect(200);
@@ -62,6 +78,7 @@ describe('Cash Flow Statement API', () => {
       expect(response.body.operatingActivities).toHaveProperty('netOperatingCashFlow');
       expect(Array.isArray(response.body.operatingActivities.inflows)).toBe(true);
       expect(Array.isArray(response.body.operatingActivities.outflows)).toBe(true);
+      expect(typeof response.body.operatingActivities.netOperatingCashFlow).toBe('number');
 
       // Verify investing activities structure
       expect(response.body.investingActivities).toHaveProperty('inflows');
@@ -69,6 +86,7 @@ describe('Cash Flow Statement API', () => {
       expect(response.body.investingActivities).toHaveProperty('netInvestingCashFlow');
       expect(Array.isArray(response.body.investingActivities.inflows)).toBe(true);
       expect(Array.isArray(response.body.investingActivities.outflows)).toBe(true);
+      expect(typeof response.body.investingActivities.netInvestingCashFlow).toBe('number');
 
       // Verify financing activities structure
       expect(response.body.financingActivities).toHaveProperty('inflows');
@@ -76,6 +94,7 @@ describe('Cash Flow Statement API', () => {
       expect(response.body.financingActivities).toHaveProperty('netFinancingCashFlow');
       expect(Array.isArray(response.body.financingActivities.inflows)).toBe(true);
       expect(Array.isArray(response.body.financingActivities.outflows)).toBe(true);
+      expect(typeof response.body.financingActivities.netFinancingCashFlow).toBe('number');
 
       // Verify summary structure
       expect(response.body.summary).toHaveProperty('totalCashInflows');
@@ -83,6 +102,11 @@ describe('Cash Flow Statement API', () => {
       expect(response.body.summary).toHaveProperty('netChangeInCash');
       expect(response.body.summary).toHaveProperty('openingCashBalance');
       expect(response.body.summary).toHaveProperty('closingCashBalance');
+      expect(typeof response.body.summary.totalCashInflows).toBe('number');
+      expect(typeof response.body.summary.totalCashOutflows).toBe('number');
+      expect(typeof response.body.summary.netChangeInCash).toBe('number');
+      expect(typeof response.body.summary.openingCashBalance).toBe('number');
+      expect(typeof response.body.summary.closingCashBalance).toBe('number');
     });
 
     it('should handle different company IDs', async () => {
@@ -102,75 +126,14 @@ describe('Cash Flow Statement API', () => {
       expect(response.body.period.toDate).toBe('2025-01-31');
     });
 
-    // Test for the actual implementation requirements when you implement the controller
-    describe('When implemented', () => {
-      it('should classify cash transactions correctly into operating activities', async () => {
-        const response = await request(app)
-          .get('/api/cashflow?companyid=1&fromDate=2025-01-01&toDate=2025-01-31')
-          .expect(200);
+    it('should return valid JSON response', async () => {
+      const response = await request(app)
+        .get('/api/cashflow?companyid=1&fromDate=2025-01-01&toDate=2025-01-31')
+        .expect(200)
+        .expect('Content-Type', /json/);
 
-        // These tests will fail until you implement the actual logic
-        // Operating activities should include:
-        // - Office Rent (outflow): 2000
-        // - Utilities Expense (outflow): 500
-        // - Sales receipts (inflow): 8000
-        // - Bank Charges (outflow): 500 (if recorded)
-        
-        // TODO: Uncomment these when implementing the actual controller
-        // expect(response.body.operatingActivities.inflows.length).toBeGreaterThan(0);
-        // expect(response.body.operatingActivities.outflows.length).toBeGreaterThan(0);
-      });
-
-      it('should classify cash transactions correctly into investing activities', async () => {
-        const response = await request(app)
-          .get('/api/cashflow?companyid=1&fromDate=2025-01-01&toDate=2025-01-31')
-          .expect(200);
-
-        // Investing activities should include:
-        // - Inventory purchase (outflow): 3000
-        
-        // TODO: Uncomment these when implementing the actual controller
-        // expect(response.body.investingActivities.outflows.length).toBeGreaterThan(0);
-      });
-
-      it('should classify cash transactions correctly into financing activities', async () => {
-        const response = await request(app)
-          .get('/api/cashflow?companyid=1&fromDate=2025-01-01&toDate=2025-01-31')
-          .expect(200);
-
-        // Financing activities should include:
-        // - Capital Contribution (inflow): 10000
-        // - Bank Loan (inflow): 7000
-        
-        // TODO: Uncomment these when implementing the actual controller
-        // expect(response.body.financingActivities.inflows.length).toBeGreaterThan(0);
-      });
-
-      it('should calculate correct cash flow totals', async () => {
-        const response = await request(app)
-          .get('/api/cashflow?companyid=1&fromDate=2025-01-01&toDate=2025-01-31')
-          .expect(200);
-
-        // TODO: Uncomment and adjust these when implementing the actual controller
-        // Expected calculations based on the sample data:
-        // Total Inflows: 10000 (capital) + 8000 (sales) + 7000 (loan) = 25000
-        // Total Outflows: 2000 (rent) + 3000 (inventory) + 500 (utilities) = 5500
-        // Net Change: 25000 - 5500 = 19500
-        // Closing Balance: 0 + 19500 = 19500 (assuming opening balance is 0)
-        
-        // expect(response.body.summary.totalCashInflows).toBe(25000);
-        // expect(response.body.summary.totalCashOutflows).toBe(5500);
-        // expect(response.body.summary.netChangeInCash).toBe(19500);
-      });
-
-      it('should only include reconciled transactions in cash flow', async () => {
-        const response = await request(app)
-          .get('/api/cashflow?companyid=1&fromDate=2025-01-01&toDate=2025-01-31')
-          .expect(200);
-
-        // Should exclude unreconciled transactions (CHQ102 and CHQ104)
-        // TODO: Implement this logic in the controller
-      });
+      // Should be valid JSON
+      expect(typeof response.body).toBe('object');
     });
   });
 });

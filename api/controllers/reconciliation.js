@@ -6,13 +6,13 @@ class BankReconciliationController {
     this.queries = new BankReconciliationQueries();
   }
 
-  async getLedgerBalance(companyId, bankAccount) {
+  async getLedgerBalance() {
     //we're using hardcoded balance (like bank balance)
     const result = await db.query(this.queries.getLedgerBalanceQuery());
     return parseFloat(result.rows[0]?.ledger_balance) || 0;
   }
 
-  async getBankStatementBalance(companyId, bankAccount) {
+  async getBankStatementBalance() {
     const result = await db.query(this.queries.getBankStatementBalanceQuery());
     return parseFloat(result.rows[0]?.bank_statement_balance) || 0;
   }
@@ -23,7 +23,12 @@ class BankReconciliationController {
   }
 
   async getReconciliationSummary(companyId, bankAccount) {
-    const result = await db.query(this.queries.getReconciliationSummaryQuery(), [companyId, bankAccount || '']);
+    const bankBalance = await this.getBankStatementBalance();
+    const result = await db.query(this.queries.getReconciliationSummaryQuery(), [
+      companyId, 
+      bankAccount || '',
+      bankBalance
+    ]);
     return result.rows[0] || {};
   }
 
@@ -163,8 +168,8 @@ class BankReconciliationController {
   async getBankReconciliationStatement(companyId, bankAccount) {
     try {
       const [ledgerBalance, bankBalance, unreconciledItems, summary] = await Promise.all([
-        this.getLedgerBalance(companyId, bankAccount),
-        this.getBankStatementBalance(companyId, bankAccount),
+        this.getLedgerBalance(),
+        this.getBankStatementBalance(),
         this.getUnreconciledTransactions(companyId, bankAccount),
         this.getReconciliationSummary(companyId, bankAccount)
       ]);
